@@ -35,11 +35,11 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'QE-NIDS ThreatGuard',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      'ThreatGuard',
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Quantum-Enhanced Endpoint Shield',
+                      'Smart Network Shield',
                       style: TextStyle(fontSize: 11, color: Colors.white54),
                     ),
                   ],
@@ -65,32 +65,32 @@ class DashboardScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Consent & Monitoring Status Banner
-                _buildConsentCard(context),
+                // 1. Consent & Protection Switch
+                _buildProtectionCard(context),
 
                 const SizedBox(height: 16),
 
-                // 2. Hero Radial Risk Gauge
-                _buildRiskGaugeCard(current, riskColor),
+                // 2. Clear Threat Level Gauge
+                _buildThreatGaugeCard(current, riskColor),
 
                 const SizedBox(height: 16),
 
-                // 3. Quick Simulation Bar
-                _buildSimulationBar(),
+                // 3. Quick Tryout Chips
+                _buildDemoBar(),
 
                 const SizedBox(height: 16),
 
-                // 4. Multi-Model Fusion Matrix
-                _buildModelGrid(current),
+                // 4. 4-Layer Protection Overview
+                _buildLayersGrid(current),
 
                 const SizedBox(height: 16),
 
-                // 5. Grounded Explainability
-                _buildExplainabilityCard(current),
+                // 5. Plain English Findings
+                _buildFindingsCard(current),
 
                 const SizedBox(height: 16),
 
-                // 6. Recent Threat Alerts History
+                // 6. Recent Alerts
                 _buildAlertsHistoryCard(),
 
                 const SizedBox(height: 30),
@@ -102,7 +102,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildConsentCard(BuildContext context) {
+  Widget _buildProtectionCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -128,13 +128,13 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Consent-Based Flow Inspection',
+                      'Network Protection',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                     Text(
                       viewModel.hasConsent
-                          ? 'Telemetry only: No packet payloads inspected'
-                          : 'Consent required to enable endpoint inspection',
+                          ? 'Only checks connection safety. Never reads private chats or photos.'
+                          : 'Turn on to let the app watch for dangerous connections.',
                       style: const TextStyle(fontSize: 11, color: Colors.white54),
                     ),
                   ],
@@ -164,7 +164,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      viewModel.isMonitoring ? 'Monitoring Active (Idle CPU <0.1%)' : 'Monitoring Paused',
+                      viewModel.isMonitoring ? 'Active (Uses almost no battery)' : 'Paused',
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -182,7 +182,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRiskGaugeCard(ThreatAssessment current, Color riskColor) {
+  Widget _buildThreatGaugeCard(ThreatAssessment current, Color riskColor) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -207,16 +207,16 @@ class DashboardScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      current.riskScore.toStringAsFixed(1),
+                      current.riskScore.toStringAsFixed(0),
                       style: TextStyle(
-                        fontSize: 38,
+                        fontSize: 42,
                         fontWeight: FontWeight.w900,
                         color: riskColor,
                         letterSpacing: -1,
                       ),
                     ),
                     const Text(
-                      'RISK SCORE',
+                      'THREAT LEVEL',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -236,7 +236,7 @@ class DashboardScreen extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                 decoration: BoxDecoration(
                   color: riskColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
@@ -252,7 +252,7 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                 decoration: BoxDecoration(
                   color: SocTheme.surfaceElevated,
                   borderRadius: BorderRadius.circular(20),
@@ -274,12 +274,12 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSimulationBar() {
+  Widget _buildDemoBar() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'DEMO ATTACK INJECTION (TEST UI)',
+          'TRY SAMPLE ALERTS',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
@@ -292,13 +292,13 @@ class DashboardScreen extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildSimChip('Normal Flow', 'BENIGN', SocTheme.normalGreen),
+              _buildSimChip('Safe Traffic', 'BENIGN', SocTheme.normalGreen),
               const SizedBox(width: 8),
-              _buildSimChip('DDoS Flood', 'DDoS', SocTheme.criticalRed),
+              _buildSimChip('Traffic Flood', 'DDoS', SocTheme.criticalRed),
               const SizedBox(width: 8),
-              _buildSimChip('Port Scan', 'PortScan', SocTheme.warningAmber),
+              _buildSimChip('Port Probe', 'PortScan', SocTheme.warningAmber),
               const SizedBox(width: 8),
-              _buildSimChip('Novel Zero-Day', 'Novel Zero-Day', SocTheme.quantumPurple),
+              _buildSimChip('New Threat', 'Novel Zero-Day', SocTheme.quantumPurple),
             ],
           ),
         ),
@@ -316,12 +316,12 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildModelGrid(ThreatAssessment current) {
+  Widget _buildLayersGrid(ThreatAssessment current) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '4-MODEL DECISION ENGINE',
+          '4-LAYER PROTECTION',
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
@@ -338,17 +338,17 @@ class DashboardScreen extends StatelessWidget {
           crossAxisSpacing: 10,
           childAspectRatio: 1.55,
           children: [
-            _buildModelCard('Random Forest', 'Signature Classifier', current.rf.status, current.rf.score, SocTheme.cyanAccent),
-            _buildModelCard('Isolation Forest', 'Unsupervised Outlier', current.iforest.status, current.iforest.score, SocTheme.normalGreen),
-            _buildModelCard('Deep Autoencoder', 'Reconstruction MSE', current.autoencoder.status, current.autoencoder.score, SocTheme.warningAmber),
-            _buildModelCard('Quantum Kernel', 'Qiskit Hilbert Space', current.qml.status, current.qml.score, SocTheme.quantumPurple),
+            _buildModelCard(current.rf.name, current.rf.role, current.rf.status, SocTheme.cyanAccent),
+            _buildModelCard(current.iforest.name, current.iforest.role, current.iforest.status, SocTheme.normalGreen),
+            _buildModelCard(current.autoencoder.name, current.autoencoder.role, current.autoencoder.status, SocTheme.warningAmber),
+            _buildModelCard(current.qml.name, current.qml.role, current.qml.status, SocTheme.quantumPurple),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildModelCard(String name, String role, String status, double score, Color accent) {
+  Widget _buildModelCard(String name, String role, String status, Color accent) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -397,7 +397,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExplainabilityCard(ThreatAssessment current) {
+  Widget _buildFindingsCard(ThreatAssessment current) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -410,10 +410,10 @@ class DashboardScreen extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(Icons.psychology_outlined, color: SocTheme.cyanAccent, size: 20),
+              Icon(Icons.info_outline, color: SocTheme.cyanAccent, size: 20),
               SizedBox(width: 8),
               Text(
-                'GROUNDED EXPLAINABILITY',
+                'WHAT WAS FOUND?',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -425,7 +425,7 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             current.summary,
-            style: const TextStyle(fontSize: 12, color: Colors.white70, height: 1.4),
+            style: const TextStyle(fontSize: 13, color: Colors.white70, height: 1.4),
           ),
           const SizedBox(height: 8),
           ...current.reasons.map((r) => Padding(
@@ -435,7 +435,7 @@ class DashboardScreen extends StatelessWidget {
                   children: [
                     const Text('• ', style: TextStyle(color: SocTheme.cyanAccent, fontSize: 14)),
                     Expanded(
-                      child: Text(r, style: const TextStyle(fontSize: 11, color: Colors.white60)),
+                      child: Text(r, style: const TextStyle(fontSize: 12, color: Colors.white60)),
                     ),
                   ],
                 ),
@@ -460,7 +460,7 @@ class DashboardScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'RECENT DETECTIONS',
+                'RECENT ALERTS',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -479,13 +479,13 @@ class DashboardScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 12),
               child: Center(
                 child: Text(
-                  'No threats detected yet.',
+                  'No threats detected yet. Device is safe.',
                   style: TextStyle(color: Colors.white38, fontSize: 12),
                 ),
               ),
             )
           else
-            ...viewModel.alertsHistory.take(5).map((a) {
+            ...viewModel.alertsHistory.take(4).map((a) {
               final color = SocTheme.getRiskColor(a.riskScore);
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
@@ -521,7 +521,7 @@ class DashboardScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'Risk: ${a.riskScore.toStringAsFixed(1)}',
+                        'Threat: ${a.riskScore.toStringAsFixed(0)}',
                         style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
                       ),
                     ),

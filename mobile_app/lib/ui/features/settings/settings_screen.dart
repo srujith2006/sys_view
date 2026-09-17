@@ -32,12 +32,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agent Settings'),
+        title: const Text('App Settings'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildSectionHeader('BACKEND ENGINE LINK'),
+          _buildSectionHeader('CONNECT TO COMPUTER'),
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -49,7 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'QE-NIDS REST Server URL',
+                  'Computer Wi-Fi Address',
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
@@ -77,28 +77,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         icon: const Icon(Icons.sync, size: 18),
-                        label: const Text('Save & Test Link'),
+                        label: const Text('Save & Test Connection'),
                         onPressed: () {
                           widget.viewModel.updateServerUrl(_urlController.text.trim());
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Updated server configuration.')),
+                            const SnackBar(content: Text('Saved computer address.')),
                           );
                         },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
-                  'Current link: ${widget.viewModel.isConnectedToServer ? "🟢 Connected" : "⚪ Offline / Demo Mode"}',
-                  style: const TextStyle(fontSize: 11, color: Colors.white54),
+                  widget.viewModel.isConnectedToServer 
+                      ? "🟢 Connected to your computer" 
+                      : "⚪ Standalone Mode (Works without computer)",
+                  style: const TextStyle(fontSize: 11, color: Colors.white60),
                 ),
               ],
             ),
           ),
 
           const SizedBox(height: 20),
-          _buildSectionHeader('NOTIFICATION THRESHOLDS'),
+          _buildSectionHeader('NOTIFICATION SETTINGS'),
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -112,10 +114,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Alert Sensitivity', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                    const Text('Alert me when threat level is at least:', style: TextStyle(fontSize: 12)),
                     Text(
-                      'Score ≥ ${_alertThreshold.toInt()}',
-                      style: const TextStyle(color: SocTheme.warningAmber, fontWeight: FontWeight.bold),
+                      '${_alertThreshold.toInt()}',
+                      style: const TextStyle(color: SocTheme.warningAmber, fontWeight: FontWeight.bold, fontSize: 13),
                     ),
                   ],
                 ),
@@ -133,8 +135,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const Divider(color: SocTheme.border, height: 20),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Audible Alarm & Vibration', style: TextStyle(fontSize: 13)),
-                  subtitle: const Text('Trigger sound for High and Critical threats', style: TextStyle(fontSize: 11, color: Colors.white54)),
+                  title: const Text('Sound & Vibration Alert', style: TextStyle(fontSize: 13)),
+                  subtitle: const Text('Play sound when high threat is found', style: TextStyle(fontSize: 11, color: Colors.white54)),
                   value: _soundEnabled,
                   activeColor: SocTheme.cyanAccent,
                   onChanged: (val) => setState(() => _soundEnabled = val),
@@ -144,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           const SizedBox(height: 20),
-          _buildSectionHeader('PRIVACY & SECURITY SCOPE'),
+          _buildSectionHeader('YOUR PRIVACY'),
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -159,15 +161,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Icon(Icons.shield, color: SocTheme.normalGreen, size: 20),
                     SizedBox(width: 8),
-                    Text('Strict Privacy Guarantees', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    Text('100% Private & Safe', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                   ],
                 ),
                 SizedBox(height: 8),
                 Text(
-                  '• Only 51 statistical flow metrics (packet counts, byte rates, duration) are processed.\n'
-                  '• User payloads, passwords, messages, and browsed web contents are NEVER captured or stored.\n'
-                  '• Battery-preserving tiered evaluation keeps background CPU utilization under 0.1%.',
-                  style: TextStyle(fontSize: 11, color: Colors.white70, height: 1.5),
+                  '• We never read your personal messages, photos, or passwords.\n'
+                  '• We only look at network traffic speed and connection safety.\n'
+                  '• Optimized to use almost no phone battery.',
+                  style: TextStyle(fontSize: 12, color: Colors.white70, height: 1.6),
                 ),
               ],
             ),
