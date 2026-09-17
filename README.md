@@ -133,34 +133,71 @@ quantum_ids/
 
 ---
 
-## 4. Quickstart Guide
+## 4. How to Download & Run (For Anyone / Any Device)
 
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+Anyone can download and run this application directly from GitHub using either the **1-Click Method (No coding needed)** or the **Developer CLI Method**.
 
-### 2. Run Master Training & Research Benchmark
-To train both Classical and Quantum models, run:
+### Method 1: 1-Click Launch (Recommended for Everyone)
+
+1. **Download the Repository**:
+   - Go to [https://github.com/srujith2006/sys_view](https://github.com/srujith2006/sys_view).
+   - Click the green **`<> Code`** button at the top right, then click **`Download ZIP`**.
+   - Extract the downloaded ZIP file to any folder on your computer.
+
+2. **Ensure Python is Installed**:
+   - Download & install [Python 3.10+](https://www.python.org/downloads/) (tick **"Add python.exe to PATH"** during setup).
+
+3. **Start the App (Double-Click)**:
+   - **For SOC Dashboard & Visual Threat Monitor**:
+     Double-click **`start_app.bat`**.
+     *(This automatically installs dependencies and opens the web dashboard at `http://localhost:8501`).*
+   - **For Low-Power Background Inspection**:
+     Double-click **`start_background_monitor.bat`**.
+     *(Runs silently in background, consumes <0.1% idle CPU, and pops native Windows desktop toast notifications when threats appear).*
+
+---
+
+### Method 2: Git Clone (For Developers)
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/srujith2006/sys_view.git
+   cd sys_view
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the Dashboard**:
+   ```bash
+   streamlit run dashboard/app.py
+   ```
+
+4. **Run the Low-Power Background Sniffer**:
+   ```bash
+   python agent/low_power_monitor.py
+   ```
+
+5. **Run the REST API**:
+   ```bash
+   python api/server.py
+   ```
+
+6. **Run Automated Unit Tests**:
+   ```bash
+   python -m unittest discover tests
+   ```
+
+> **Note**: All ML/DL/QML models are already pre-trained in the `models/` directory, so users can run predictions and real-time simulations immediately without needing to re-train!
+
+---
+
+### Optional: Re-train All Models from Scratch
+If you want to re-train the classical, deep learning, and quantum models on new data:
 ```bash
 python train.py --samples 2500 --qubits 4 --qml-samples 400
-```
-This will:
-1. Load or generate the CIC-IDS2017 benchmark dataset.
-2. Clean data without leakage.
-3. Train the Isolation Forest, Random Forest, and Qiskit Quantum Kernel SVM.
-4. Evaluate both models and save serialized artifacts to `models/`.
-5. Output the side-by-side benchmark comparison table.
-
-### 3. Launch the SOC Streamlit Dashboard
-```bash
-streamlit run dashboard/app.py
-```
-Open your browser at `http://localhost:8501`.
-
-### 4. Run Automated Test Suite
-```bash
-python -m unittest discover tests
 ```
 
 ---
