@@ -1,0 +1,42 @@
+[
+  {
+    "Held-Out Attack Class": "DDoS",
+    "Sample Count": 462,
+    "Autoencoder Catch Rate (%)": 100.0,
+    "Isolation Forest Catch Rate (%)": 100.0,
+    "Overall Threat Detection (%)": 100.0,
+    "Novel Anomaly Flagged (%)": 100.0,
+    "Mean Risk Score (0-100)": 84.1,
+    "Forced Classifier Guess": "PortScan"
+  },
+  {
+    "Held-Out Attack Class": "PortScan",
+    "Sample Count": 302,
+    "Autoencoder Catch Rate (%)": 100.0,
+    "Isolation Forest Catch Rate (%)": 100.0,
+    "Overall Threat Detection (%)": 100.0,
+    "Novel Anomaly Flagged (%)": 46.4,
+    "Mean Risk Score (0-100)": 90.4,
+    "Forced Classifier Guess": "Botnet"
+  },
+  {
+    "Held-Out Attack Class": "BruteForce",
+    "Sample Count": 238,
+    "Autoencoder Catch Rate (%)": 100.0,
+    "Isolation Forest Catch Rate (%)": 100.0,
+    "Overall Threat Detection (%)": 100.0,
+    "Novel Anomaly Flagged (%)": 63.0,
+    "Mean Risk Score (0-100)": 87.5,
+    "Forced Classifier Guess": "Infiltration"
+  },
+  {
+    "Held-Out Attack Class": "Botnet",
+    "Sample Count": 134,
+    "Autoencoder Catch Rate (%)": 100.0,
+    "Isolation Forest Catch Rate (%)": 100.0,
+    "Overall Threat Detection (%)": 100.0,
+    "Novel Anomaly Flagged (%)": 95.5,
+    "Mean Risk Score (0-100)": 79.8,
+    "Forced Classifier Guess": "BENIGN"
+  }
+]

@@ -1,0 +1,13 @@
+Metric,Classical Random Forest,Quantum Kernel SVM (4Q)
+Accuracy,0.9978,0.9833
+Precision (Macro),0.9921,0.9813
+Precision (Weighted),0.9979,0.9836
+Recall (Macro),0.9952,0.9846
+Recall (Weighted),0.9978,0.9833
+F1-Score (Macro),0.9935,0.9828
+F1-Score (Weighted),0.9978,0.9834
+False Positive Rate (FPR),0.0,0.0226
+ROC-AUC,1.0,0.9989
+PR-AUC,1.0,0.9983
+Training Time (sec),0.172,0.257
+Inference Latency (ms/sample),0.064,1.258

@@ -1,0 +1,5 @@
+Held-Out Attack Class,Sample Count,Autoencoder Catch Rate (%),Isolation Forest Catch Rate (%),Overall Threat Detection (%),Novel Anomaly Flagged (%),Mean Risk Score (0-100),Forced Classifier Guess
+DDoS,462,100.0,100.0,100.0,100.0,84.1,PortScan
+PortScan,302,100.0,100.0,100.0,46.4,90.4,Botnet
+BruteForce,238,100.0,100.0,100.0,63.0,87.5,Infiltration
+Botnet,134,100.0,100.0,100.0,95.5,79.8,BENIGN

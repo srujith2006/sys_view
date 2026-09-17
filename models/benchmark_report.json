@@ -1,0 +1,162 @@
+{
+  "classical_metrics": {
+    "accuracy": 0.9978,
+    "precision_macro": 0.9921,
+    "precision_weighted": 0.9979,
+    "recall_macro": 0.9952,
+    "recall_weighted": 0.9978,
+    "f1_macro": 0.9935,
+    "f1_weighted": 0.9978,
+    "false_positive_rate": 0.0,
+    "roc_auc": 1.0,
+    "pr_auc": 1.0,
+    "confusion_matrix": [
+      [
+        267,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        20,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        34,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        70,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        13,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        45
+      ]
+    ],
+    "class_names": [
+      "BENIGN",
+      "Botnet",
+      "BruteForce",
+      "DDoS",
+      "Infiltration",
+      "PortScan"
+    ],
+    "training_time_sec": 0.172,
+    "inference_latency_ms": 0.064
+  },
+  "quantum_metrics": {
+    "accuracy": 0.9833,
+    "precision_macro": 0.9813,
+    "precision_weighted": 0.9836,
+    "recall_macro": 0.9846,
+    "recall_weighted": 0.9833,
+    "f1_macro": 0.9828,
+    "f1_weighted": 0.9834,
+    "false_positive_rate": 0.0226,
+    "roc_auc": 0.9989,
+    "pr_auc": 0.9983,
+    "confusion_matrix": [
+      [
+        173,
+        4
+      ],
+      [
+        1,
+        122
+      ]
+    ],
+    "class_names": [
+      "BENIGN",
+      "ANOMALY"
+    ],
+    "training_time_sec": 0.257,
+    "inference_latency_ms": 1.258
+  },
+  "autoencoder_metrics": {
+    "threshold_95": 0.012635826133191586,
+    "percentile_99": 0.025743216276168823,
+    "mean_benign_error": 0.004989453591406345,
+    "test_tpr": 100.0,
+    "test_fpr": 3.75,
+    "training_time_sec": 4.703
+  },
+  "findings": [
+    "Classical ML outperformed Quantum Kernel SVM by 0.0144 in weighted F1-score. Classical decision trees and ensemble methods can leverage full feature granularity without dimensional compression constraints.",
+    "Quantum Kernel simulation incurred a 1.5x training runtime overhead relative to classical baselines. Simulating quantum state entanglement on classical hardware requires O(N^2) pairwise circuit evaluations, highlighting that near-term QML value depends on specialized QPU acceleration or high-dimensional quantum embeddings.",
+    "Classical ML maintained a comparable or lower False Positive Rate (0.0000 vs 0.0226)."
+  ],
+  "pca_summary": {
+    "n_classical_features": 16,
+    "selected_features": [
+      "FIN Flag Count",
+      "Bwd Packet Length Min",
+      "Avg Bwd Segment Size",
+      "Bwd Packet Length Mean",
+      "Bwd Packet Length Max",
+      "Min Packet Length",
+      "RST Flag Count",
+      "Down/Up Ratio",
+      "Subflow Bwd Bytes",
+      "Total Length of Bwd Packets",
+      "act_data_pkt_fwd",
+      "Fwd Header Length",
+      "Total Fwd Packets",
+      "Subflow Fwd Packets",
+      "SYN Flag Count",
+      "Subflow Fwd Bytes"
+    ],
+    "feature_importance_scores": [
+      3592789752.59483,
+      5146.096973444981,
+      5146.096104530285,
+      5146.096104530285,
+      5146.09490769924,
+      2675.3875934386924,
+      1392.9186395495083,
+      1016.400112639354,
+      705.4241768460207,
+      705.4241768460207,
+      687.0880853165775,
+      685.3880334486005,
+      685.3878393915303,
+      685.3878393915303,
+      597.8395450773179,
+      548.3699812763487
+    ],
+    "n_quantum_features": 4,
+    "pca_explained_variance_ratio": [
+      0.6381170153617859,
+      0.2079647332429886,
+      0.05902128666639328,
+      0.034896813333034515
+    ],
+    "total_variance_explained": 0.9399998188018799
+  }
+}
