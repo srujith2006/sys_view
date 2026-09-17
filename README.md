@@ -135,9 +135,16 @@ quantum_ids/
 
 ## 4. How to Download & Run (For Anyone / Any Device)
 
-Anyone can download and run this application directly from GitHub using either the **1-Click Method (No coding needed)** or the **Developer CLI Method**.
+### 📱 Android Mobile: Install the APK directly
 
-### Method 1: 1-Click Launch (Recommended for Everyone)
+1. Go to the [Releases](https://github.com/srujith2006/sys_view/releases) section of this repository.
+2. Download **`QE-NIDS-ThreatGuard.apk`** on your Android phone.
+3. Tap the file to install (allow "Install unknown apps" if prompted).
+4. Enjoy the native **Flutter Material 3 Cyber-SOC UI** with live risk scores, simulated attack injection, and push notifications!
+
+---
+
+### 💻 Windows PC: 1-Click Launch (Recommended for Everyone)
 
 1. **Download the Repository**:
    - Go to [https://github.com/srujith2006/sys_view](https://github.com/srujith2006/sys_view).
