@@ -16,5 +16,5 @@ echo.
 echo [2/2] Launching SOC Endpoint Dashboard & Monitoring Console...
 echo Opening in your default browser at http://localhost:8501
 echo.
-streamlit run dashboard/app.py
+python -m streamlit run dashboard/app.py
 pause
