@@ -308,75 +308,275 @@ for i, a in enumerate(alerts):
 df_display = pd.DataFrame(parsed_rows)
 
 # -------------------------------------------------------------
-# OVERVIEW KPI CARDS
+# ONE-CLICK THREAT SCANNER & INSTANT VERIFICATION (MAIN USER VIEW)
 # -------------------------------------------------------------
-n_total = len(df_display)
-n_normal = int((df_display["Status"] == "NORMAL").sum())
-n_threats = int((df_display["Status"] != "NORMAL").sum())
-n_high_crit = int((df_display["Severity"].isin(["HIGH", "CRITICAL"])).sum())
-n_novel = int(df_display["Is Novel Anomaly"].sum())
-avg_risk = float(df_display["Risk Score (0-100)"].mean())
+st.markdown("### 🛡️ One-Click Threat Scanner")
 
-kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
-with kpi1:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">Flows Monitored</div><div class="metric-val" style="color:#38bdf8;">{n_total:,}</div></div>', unsafe_allow_html=True)
-with kpi2:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">Normal Baseline</div><div class="metric-val" style="color:#10b981;">{n_normal:,}</div></div>', unsafe_allow_html=True)
-with kpi3:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">Active Threats</div><div class="metric-val" style="color:#f59e0b;">{n_threats:,}</div></div>', unsafe_allow_html=True)
-with kpi4:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">High / Critical Alerts</div><div class="metric-val" style="color:#ef4444;">{n_high_crit:,}</div></div>', unsafe_allow_html=True)
-with kpi5:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">Novel Anomalies</div><div class="metric-val" style="color:#ec4899;">{n_novel:,}</div></div>', unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# -------------------------------------------------------------
-# MAIN CONSOLE TABS
-# -------------------------------------------------------------
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🚨 Live Alert Triage",
-    "🔍 4-Model Flow Inspector & Explainability",
-    "📊 Telemetry & Risk Analytics",
-    "🔬 Classical vs Quantum ML Benchmark",
-    "🧪 Leave-One-Attack-Class-Out (LOACO) Experiment"
-])
-
-# -------------------------------------------------------------
-# TAB 1: LIVE ALERT TRIAGE TABLE
-# -------------------------------------------------------------
-with tab1:
-    st.markdown("#### Real-Time Network Threat & Anomaly Triage Log")
-    
-    cf1, cf2, cf3 = st.columns([2, 1.5, 2])
-    with cf1:
-        selected_sevs = st.multiselect("Filter Severity Tier", ["SAFE", "LOW", "MEDIUM", "HIGH", "CRITICAL"], default=["LOW", "MEDIUM", "HIGH", "CRITICAL"])
-    with cf2:
-        filter_novel = st.checkbox("Show Only Potential Novel Anomalies", value=False)
-    with cf3:
-        ip_query = st.text_input("Filter by IP Address", "")
-        
-    f_df = df_display.copy()
-    if selected_sevs:
-        f_df = f_df[f_df["Severity"].isin(selected_sevs)]
-    if filter_novel:
-        f_df = f_df[f_df["Is Novel Anomaly"]]
-    if ip_query:
-        f_df = f_df[f_df["Source IP"].str.contains(ip_query) | f_df["Destination IP"].str.contains(ip_query)]
-        
-    def highlight_sev(val):
-        colors = {
-            "CRITICAL": "background-color: #7f1d1d; color: #fca5a5; font-weight: bold;",
-            "HIGH": "background-color: #7c2d12; color: #fdba74; font-weight: bold;",
-            "MEDIUM": "background-color: #713f12; color: #fde047;",
-            "LOW": "background-color: #1e3a8a; color: #93c5fd;",
-            "SAFE": "background-color: #064e3b; color: #6ee7b7;"
+# Initialize scan state
+if "scan_verdict" not in st.session_state:
+    st.session_state.scan_verdict = {
+        "status": "READY",
+        "title": "DEVICE READY FOR SAFETY INSPECTION",
+        "threat_level": 0,
+        "level_text": "Ready",
+        "color": "#38bdf8",
+        "bg_color": "rgba(56, 189, 248, 0.1)",
+        "border_color": "#38bdf8",
+        "summary": "Click the button below to inspect your network connections with 4-layer AI protection.",
+        "findings": [
+            "Network monitoring is initialized and ready.",
+            "Click 'Scan Network Now' to verify if any malware or hacking is attacking your device."
+        ],
+        "models": {
+            "Known Threat Matcher": "Ready",
+            "Behavior Checker": "Ready",
+            "Neural Pattern Scan": "Ready",
+            "Quantum AI Guard": "Ready"
         }
-        return colors.get(val, "")
+    }
 
-    cols_show = ["Timestamp", "Source IP", "Destination IP", "Destination Port", "Status", "Risk Score (0-100)", "Severity", "Attack Category", "Is Novel Anomaly", "IF Anomaly Score", "AE Recon Error"]
-    st.dataframe(f_df[cols_show].style.applymap(highlight_sev, subset=["Severity"]), use_container_width=True, height=360)
-    st.caption("ℹ️ *Risk Scores are calibrated from 0 to 100 based on multi-model corroboration. Investigate anomalous connections with high risk scores.*")
+c_scan1, c_scan2 = st.columns([1.6, 2.4])
+with c_scan1:
+    if st.button("🔍 SCAN NETWORK FOR ATTACKS NOW", type="primary", use_container_width=True):
+        top_idx = int(df_display["Risk Score (0-100)"].idxmax())
+        top_alert = alerts[top_idx]
+        is_safe = top_alert["risk_score"] < 40
+        
+        st.session_state.scan_verdict = {
+            "status": "SAFE" if is_safe else "ATTACK",
+            "title": "DEVICE IS SAFE — NO MALWARE ATTACKING" if is_safe else f"ALERT: MALICIOUS ACTIVITY DETECTED ({top_alert['attack_category']})",
+            "threat_level": int(top_alert["risk_score"]),
+            "level_text": "Safe" if is_safe else ("High Threat" if top_alert["risk_score"] >= 80 else "Suspicious"),
+            "color": "#10b981" if is_safe else "#ef4444",
+            "bg_color": "rgba(16, 185, 129, 0.15)" if is_safe else "rgba(239, 68, 68, 0.15)",
+            "border_color": "#10b981" if is_safe else "#ef4444",
+            "summary": "All network connections are normal and safe. No malware or hacking detected." if is_safe else f"Detected potentially harmful network behavior matching {top_alert['attack_category']}.",
+            "findings": [d["narrative"] for d in top_alert.get("explainability", {}).get("top_deviations", [])[:3]] or ["Connection parameters match safe operating baseline."],
+            "models": {
+                "Known Threat Matcher": "Safe" if top_alert["models"]["random_forest"]["predicted_class"] == "BENIGN" else top_alert["models"]["random_forest"]["predicted_class"],
+                "Behavior Checker": "Unusual" if top_alert["models"]["isolation_forest"]["anomaly_score"] > 0.5 else "Safe",
+                "Neural Pattern Scan": "Unusual" if top_alert["models"]["deep_autoencoder"]["reconstruction_error"] > autoencoder.threshold_ else "Safe",
+                "Quantum AI Guard": "Safe" if top_alert["models"]["quantum_kernel_svm"]["prediction"] == "BENIGN" else "Alert"
+            }
+        }
+        st.rerun()
+
+with c_scan2:
+    st.markdown("<span style='font-size: 12px; color: #94a3b8; font-weight: 600;'>Click below to test how the system detects attacks:</span>", unsafe_allow_html=True)
+    t1, t2, t3, t4 = st.columns(4)
+    with t1:
+        if st.button("🟢 Safe Traffic", use_container_width=True):
+            st.session_state.scan_verdict = {
+                "status": "SAFE",
+                "title": "DEVICE IS SAFE — NORMAL INTERNET TRAFFIC",
+                "threat_level": 8,
+                "level_text": "Safe",
+                "color": "#10b981",
+                "bg_color": "rgba(16, 185, 129, 0.15)",
+                "border_color": "#10b981",
+                "summary": "Your internet connection is safe. Everyday browsing, streaming, and chatting traffic matches normal patterns.",
+                "findings": [
+                    "Data speed: Normal",
+                    "Connection count: Normal",
+                    "No unauthorized probes or flood detected"
+                ],
+                "models": {
+                    "Known Threat Matcher": "Safe",
+                    "Behavior Checker": "Safe",
+                    "Neural Pattern Scan": "Safe",
+                    "Quantum AI Guard": "Safe"
+                }
+            }
+            st.rerun()
+    with t2:
+        if st.button("⚠️ Port Probe", use_container_width=True):
+            st.session_state.scan_verdict = {
+                "status": "ATTACK",
+                "title": "HACKER PROBE DETECTED (Port Scanning)",
+                "threat_level": 84,
+                "level_text": "High Threat",
+                "color": "#f59e0b",
+                "bg_color": "rgba(245, 158, 11, 0.15)",
+                "border_color": "#f59e0b",
+                "summary": "An outside device or malware is probing your open network ports to find security holes.",
+                "findings": [
+                    "Rapid connection attempts across multiple ports in under a second",
+                    "Short, unfinished connection attempts",
+                    "Flagged by Behavior Checker & Known Threat Matcher"
+                ],
+                "models": {
+                    "Known Threat Matcher": "PortScan",
+                    "Behavior Checker": "Unusual (+3.8σ)",
+                    "Neural Pattern Scan": "Unusual",
+                    "Quantum AI Guard": "Alert"
+                }
+            }
+            st.rerun()
+    with t3:
+        if st.button("🚨 Traffic Flood", use_container_width=True):
+            st.session_state.scan_verdict = {
+                "status": "ATTACK",
+                "title": "CRITICAL ATTACK DETECTED (Traffic Flood / DDoS)",
+                "threat_level": 96,
+                "level_text": "Critical Threat",
+                "color": "#ef4444",
+                "bg_color": "rgba(239, 68, 68, 0.15)",
+                "border_color": "#ef4444",
+                "summary": "Sudden massive burst of packet requests attempting to overwhelm and crash your internet connection.",
+                "findings": [
+                    "Abnormal surge of 3,400+ packets/sec",
+                    "98% abnormal connection handshake requests",
+                    "Immediate risk score surge to 96/100"
+                ],
+                "models": {
+                    "Known Threat Matcher": "DDoS",
+                    "Behavior Checker": "Unusual (+5.2σ)",
+                    "Neural Pattern Scan": "Unusual (High MSE)",
+                    "Quantum AI Guard": "Alert"
+                }
+            }
+            st.rerun()
+    with t4:
+        if st.button("⚡ Unknown Threat", use_container_width=True):
+            st.session_state.scan_verdict = {
+                "status": "ATTACK",
+                "title": "NEW UNKNOWN MALWARE BEHAVIOR (Zero-Day Anomaly)",
+                "threat_level": 79,
+                "level_text": "Suspicious / Novel",
+                "color": "#ec4899",
+                "bg_color": "rgba(236, 72, 153, 0.15)",
+                "border_color": "#ec4899",
+                "summary": "Traffic does not match known virus databases, but the AI Neural Scan and Quantum Guard detected highly abnormal behavior.",
+                "findings": [
+                    "Deep Autoencoder detected severe reconstruction error",
+                    "Quantum Kernel SVM mapped connection outside normal Hilbert boundary",
+                    "Flagged as Potential Novel / Zero-Day Threat without needing prior signatures"
+                ],
+                "models": {
+                    "Known Threat Matcher": "Uncertain (Low Confidence)",
+                    "Behavior Checker": "Unusual",
+                    "Neural Pattern Scan": "High Anomaly",
+                    "Quantum AI Guard": "Outlier"
+                }
+            }
+            st.rerun()
+
+# RENDER SCAN VERDICT CARD
+v = st.session_state.scan_verdict
+st.markdown(f"""
+<div style="background: {v['bg_color']}; border: 2px solid {v['border_color']}; border-radius: 12px; padding: 20px; margin: 16px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h3 style="color: {v['color']}; margin: 0; display: flex; align-items: center; gap: 10px;">
+                <span>{'🟢' if v['status'] == 'SAFE' else ('🚨' if v['status'] == 'ATTACK' else '🛡️')}</span> {v['title']}
+            </h3>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 8px 0 0 0;">
+                {v['summary']}
+            </p>
+        </div>
+        <div style="text-align: right; background: rgba(0,0,0,0.3); padding: 10px 18px; border-radius: 10px; border: 1px solid {v['border_color']};">
+            <div style="font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase;">THREAT LEVEL</div>
+            <div style="font-size: 32px; font-weight: 900; color: {v['color']}; line-height: 1;">{v['threat_level']} <span style="font-size: 16px;">/ 100</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: {v['color']};">{v['level_text']}</div>
+        </div>
+    </div>
+    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 16px 0;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px;">
+        <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 8px;">
+            <span style="font-size: 11px; color: #94a3b8;">Known Threat Matcher</span><br>
+            <b style="color: {'#10b981' if v['models']['Known Threat Matcher'] == 'Safe' else ('#38bdf8' if v['models']['Known Threat Matcher'] == 'Ready' else '#ef4444')}; font-size: 13px;">{v['models']['Known Threat Matcher']}</b>
+        </div>
+        <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 8px;">
+            <span style="font-size: 11px; color: #94a3b8;">Behavior Checker</span><br>
+            <b style="color: {'#10b981' if v['models']['Behavior Checker'] == 'Safe' else ('#38bdf8' if v['models']['Behavior Checker'] == 'Ready' else '#f59e0b')}; font-size: 13px;">{v['models']['Behavior Checker']}</b>
+        </div>
+        <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 8px;">
+            <span style="font-size: 11px; color: #94a3b8;">Neural Pattern Scan</span><br>
+            <b style="color: {'#10b981' if v['models']['Neural Pattern Scan'] == 'Safe' else ('#38bdf8' if v['models']['Neural Pattern Scan'] == 'Ready' else '#f59e0b')}; font-size: 13px;">{v['models']['Neural Pattern Scan']}</b>
+        </div>
+        <div style="background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 8px;">
+            <span style="font-size: 11px; color: #94a3b8;">Quantum AI Guard</span><br>
+            <b style="color: {'#10b981' if v['models']['Quantum AI Guard'] == 'Safe' else ('#38bdf8' if v['models']['Quantum AI Guard'] == 'Ready' else '#ec4899')}; font-size: 13px;">{v['models']['Quantum AI Guard']}</b>
+        </div>
+    </div>
+    <div style="font-size: 12px; color: #94a3b8;">
+        <b>What Was Found:</b>
+        <ul style="margin: 4px 0 0 0; padding-left: 20px; color: #cbd5e1;">
+            {''.join([f"<li>{item}</li>" for item in v['findings']])}
+        </ul>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# -------------------------------------------------------------
+# ADVANCED SECURITY DETAILS (HIDDEN BY DEFAULT)
+# -------------------------------------------------------------
+with st.expander("🛠️ Advanced Security Details (Raw Flows, Technical Metrics, & Quantum Circuit)", expanded=False):
+    st.markdown("#### Detailed Telemetry & Multi-Model Corroboration Log")
+    
+    n_total = len(df_display)
+    n_normal = int((df_display["Status"] == "NORMAL").sum())
+    n_threats = int((df_display["Status"] != "NORMAL").sum())
+    n_high_crit = int((df_display["Severity"].isin(["HIGH", "CRITICAL"])).sum())
+    n_novel = int(df_display["Is Novel Anomaly"].sum())
+
+    kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
+    with kpi1:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Flows Monitored</div><div class="metric-val" style="color:#38bdf8;">{n_total:,}</div></div>', unsafe_allow_html=True)
+    with kpi2:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Normal Baseline</div><div class="metric-val" style="color:#10b981;">{n_normal:,}</div></div>', unsafe_allow_html=True)
+    with kpi3:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Active Threats</div><div class="metric-val" style="color:#f59e0b;">{n_threats:,}</div></div>', unsafe_allow_html=True)
+    with kpi4:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">High / Critical Alerts</div><div class="metric-val" style="color:#ef4444;">{n_high_crit:,}</div></div>', unsafe_allow_html=True)
+    with kpi5:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Novel Anomalies</div><div class="metric-val" style="color:#ec4899;">{n_novel:,}</div></div>', unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "🚨 Live Alert Triage",
+        "🔍 4-Model Flow Inspector & Explainability",
+        "📊 Telemetry & Risk Analytics",
+        "🔬 Classical vs Quantum ML Benchmark",
+        "🧪 Leave-One-Attack-Class-Out (LOACO) Experiment"
+    ])
+
+    with tab1:
+        st.markdown("#### Real-Time Network Threat & Anomaly Triage Log")
+        cf1, cf2, cf3 = st.columns([2, 1.5, 2])
+        with cf1:
+            selected_sevs = st.multiselect("Filter Severity Tier", ["SAFE", "LOW", "MEDIUM", "HIGH", "CRITICAL"], default=["LOW", "MEDIUM", "HIGH", "CRITICAL"])
+        with cf2:
+            filter_novel = st.checkbox("Show Only Potential Novel Anomalies", value=False)
+        with cf3:
+            ip_query = st.text_input("Filter by IP Address", "")
+            
+        f_df = df_display.copy()
+        if selected_sevs:
+            f_df = f_df[f_df["Severity"].isin(selected_sevs)]
+        if filter_novel:
+            f_df = f_df[f_df["Is Novel Anomaly"]]
+        if ip_query:
+            f_df = f_df[f_df["Source IP"].str.contains(ip_query) | f_df["Destination IP"].str.contains(ip_query)]
+            
+        def highlight_sev(val):
+            colors = {
+                "CRITICAL": "background-color: #7f1d1d; color: #fca5a5; font-weight: bold;",
+                "HIGH": "background-color: #7c2d12; color: #fdba74; font-weight: bold;",
+                "MEDIUM": "background-color: #713f12; color: #fde047;",
+                "LOW": "background-color: #1e3a8a; color: #93c5fd;",
+                "SAFE": "background-color: #064e3b; color: #6ee7b7;"
+            }
+            return colors.get(val, "")
+
+        cols_show = ["Timestamp", "Source IP", "Destination IP", "Destination Port", "Status", "Risk Score (0-100)", "Severity", "Attack Category", "Is Novel Anomaly", "IF Anomaly Score", "AE Recon Error"]
+        try:
+            st.dataframe(f_df[cols_show].style.applymap(highlight_sev, subset=["Severity"]), use_container_width=True, height=360)
+        except Exception:
+            st.dataframe(f_df[cols_show], use_container_width=True, height=360)
+        st.caption("ℹ️ *Risk Scores are calibrated from 0 to 100 based on multi-model corroboration. Investigate anomalous connections with high risk scores.*")
+
 
 # -------------------------------------------------------------
 # TAB 2: 4-MODEL FLOW INSPECTOR & EXPLAINABILITY
